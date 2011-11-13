@@ -1,0 +1,23 @@
+{% macro directory(name) -%}
+    <tr><td>Directory: </td><td><a href={{ rel_path }}{{ name }}>{{ name }}</a></td></tr>
+{%- endmacro %}
+{% macro file(name) -%}
+    <tr><td>File: </td><td>{{ name }}</a></td></tr>
+{%- endmacro %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+    <head>
+        <title>Bropad Fileserv</title>
+    </head>
+    <body>
+        <table>
+            {% for item, type in listing %}
+                {% if type == "directory" %}
+                    {{ directory(item) }}
+                {% else %}
+                    {{ file(item) }}
+                {% endif %}
+            {% endfor %}
+        </table>
+    </body>
+</html>
