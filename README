@@ -1,0 +1,8 @@
+RESTful media server for the bropad in SF
+
+Features:
+--------
+
+1) Upload file to directory, have it sync'd daily to media server
+2) Download file via torrent (generated/served on-demand)
+3) Search and download files using MongoDB/ThriftDB
