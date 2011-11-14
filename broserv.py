@@ -12,15 +12,26 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def hello_world():
     return 'Hello World!'
 
+@app.route('/search/', methods=['GET'])
+def search():
+    return render_template('search.html')
+
 @app.route('/list/', methods=['GET'])
 def root_list():
     return list('')
 
-@app.route('/upload/', methods=['GET','POST'])
+@app.route('/list/<path>/', methods=['GET'])
+def list(path):
+    final_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], path)
+    files = Popen("ls -la %s" % final_path, stdout=PIPE, shell=True)
+    listing = create_ls_listing(files.stdout.read())
+    return render_template('list_files.html', rel_path=request.path, listing=listing, path=path)
+
+@app.route('/upload/', methods=['POST'])
 def root_upload():
     return upload_file('')
 
-@app.route('/upload/<path>/', methods=['GET','POST'])
+@app.route('/upload/<path>/', methods=['POST'])
 def upload_file(path):
     if request.method == 'POST':
         the_file = request.files['file']
@@ -31,22 +42,6 @@ def upload_file(path):
                 return redirect(url_for('root_list'))
             else:
                 return redirect(url_for('list', path=path))
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form action="" method=post enctype=multipart/form-data>
-        <p><input type=file name=file>
-        <input type=submit value=Upload>
-    </form>
-    '''
-
-@app.route('/list/<path>/', methods=['GET'])
-def list(path):
-    final_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], path)
-    files = Popen("ls -la %s" % final_path, stdout=PIPE, shell=True)
-    listing = create_ls_listing(files.stdout.read())
-    return render_template('list_files.html', rel_path=request.path, listing=listing)
 
 @app.route('/favicon.ico')
 def favicon():

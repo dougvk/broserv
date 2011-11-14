@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+    <head>
+        <script type=text/javascript src="{{ url_for('static', filename='jquery-1.7.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='instant.js') }}"></script>
+        <title>Broserv: The Bropad Fileserv</title>
+    </head>
+    <body>
+        <form method="get" action="">
+            <input type=text id=query name=query />
+            <input type=submit value=Search />
+        </form>
+
+        <div id=results></div>
+    </body>
+</html>

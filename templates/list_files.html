@@ -7,7 +7,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="en">
     <head>
-        <title>Bropad Fileserv</title>
+        <title>Broserv: The Bropad Fileserv</title>
     </head>
     <body>
         <table>
@@ -19,5 +19,16 @@
                 {% endif %}
             {% endfor %}
         </table>
+        <h1>Upload new File</h1>
+        {% if path == "" %}
+        <form action="/upload/" method=post enctype=multipart/form-data>
+            <p><input type=file name=file>
+        <input type=submit value=Upload>
+        {% else %}
+        <form action="/upload/{{ path }}/" method=post enctype=multipart/form-data>
+            <p><input type=file name=file>
+        <input type=submit value=Upload>
+        {% endif %}
+    </form>
     </body>
 </html>
