@@ -2,7 +2,11 @@
     <tr><td>Directory: </td><td><a href={{ rel_path }}{{ name }}>{{ name }}</a></td></tr>
 {%- endmacro %}
 {% macro file(name) -%}
-    <tr><td>File: </td><td>{{ name }}</a></td></tr>
+    {% if path == "" %}
+        <tr><td>File: </td><td><a href=/torrent{{ path }}/{{ name }}>{{ name }}</a></td></tr>
+    {% else %}
+        <tr><td>File: </td><td><a href=/torrent/{{ path }}/{{ name }}>{{ name }}</a></td></tr>
+    {% endif %}
 {%- endmacro %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="en">
