@@ -1,11 +1,15 @@
-{% macro directory(name) -%}
-    <tr><td>Directory: </td><td><a href={{ rel_path }}{{ name }}>{{ name }}</a></td></tr>
-{%- endmacro %}
-{% macro file(name) -%}
-    {% if path == "" %}
-        <tr><td>File: </td><td><a href=/torrent{{ path }}/{{ name }}>{{ name }}</a></td></tr>
+{% macro directory(names) -%}
+    {% if names == ".." %}
+        <tr><td>Directory: </td><td><a href={{ rel_path|urlencode }}{{names|urlencode }}>Parent Directory</a></td></tr>
     {% else %}
-        <tr><td>File: </td><td><a href=/torrent/{{ path }}/{{ name }}>{{ name }}</a></td></tr>
+        <tr><td>Directory: </td><td><a href={{ rel_path|urlencode }}{{ names|urlencode }}>{{ names }}</a></td></tr>
+    {% endif %}
+{%- endmacro %}
+{% macro file(names) -%}
+    {% if path == "" %}
+        <tr><td>File: </td><td><a href=/torrent{{ path|urlencode }}/{{ names|urlencode }}>{{ names }}</a></td></tr>
+    {% else %}
+        <tr><td>File: </td><td><a href=/torrent/{{ path|urlencode }}/{{ names|urlencode }}>{{ names }}</a></td></tr>
     {% endif %}
 {%- endmacro %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
