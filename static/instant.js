@@ -19,7 +19,7 @@ $(document).ready(function() {
 
         runningRequest = true;
         request = $.ajax({
-            url: 'http://api.thriftdb.com/test_bucket/files/_search',
+            url: 'http://api.thriftdb.com/test_bucket/test_media/_search',
             dataType: 'jsonp',
             data: {
                 q: $query.val()
@@ -29,8 +29,7 @@ $(document).ready(function() {
                 var items = [];
 
                 $.each(data.results, function(index, val) {
-                    items.push('<li id="' + index + '">' + val.item.name + '</li>');
-                    items.push('<li id="' + index + '">' + val.item.path + '</li>');
+                    items.push('<li id="' + index + '">' + val.item.path + '/' +  val.item.name + '</li>');
                 });
 
                 $('div#results').html(items.join(''));
