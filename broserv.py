@@ -69,10 +69,12 @@ def get_listing(path, stdout, file_type):
     newline_split = stdout.split('\n')
     listing = []
     for item in newline_split:
-        item = item[len(path)+1:]
+        item = item[len(path):]
         if item is not "" and item[0] is not ".":
+            if item[0] is '/':
+                item = item[1:]
             listing.append((item, file_type))
-    return sorted(listing, key=itemgetter(1))
+    return sorted(listing, key=itemgetter(0))
 
 def term_escape(path):
     path = path.replace(" ", "\ ")
@@ -81,6 +83,8 @@ def term_escape(path):
     path = path.replace("]", "\]")
     path = path.replace(")", "\)")
     path = path.replace("(", "\(")
+    path = path.replace("'", "\\'")
+    path = path.replace("\"", "\\\"")
     return path
 
 @app.template_filter('urlencode')
@@ -89,4 +93,4 @@ def do_urlencode(value):
 
 if __name__ == '__main__':
     app.debug = True
-    app.run()
+    app.run(host='192.168.0.128')
