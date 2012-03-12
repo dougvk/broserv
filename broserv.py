@@ -19,15 +19,21 @@ def search():
 
 @app.route('/torrent/<path:path>/', methods=['GET'])
 def seed_file(path):
-    true_path = os.path.join(app.config['UPLOAD_FOLDER'], path)
+    true_path = os.path.join(app.config['MEDIA_FOLDER'], path)
     directory = os.path.dirname(true_path)
-    timestamp = dt.now().strftime('%Y-%m-%d-')
-    torrent_path = "%s/%s%s.torrent" % (directory, timestamp, os.path.basename(true_path))
-    command = "ctorrent -t -u \"%s\" -s %s %s" % (app.config['BROSERV'], term_escape(torrent_path), term_escape(true_path))
-    filename = os.path.basename(torrent_path)
-    p = Popen(command, stdout=PIPE, shell=True)
-    p.communicate()
-    return send_from_directory(directory, filename, cache_timeout=1, as_attachment=True, mimetype='application/x-bittorrent')
+    filename = os.path.basename(true_path)
+    #print "True Path: %s\nDirectory: %s\nFilename: %s\n" % (true_path, directory, filename)
+    torrent_true_path = "%s/%s.torrent" % (directory, filename)
+    torrent_directory = os.path.dirname(torrent_true_path)
+    torrent_name = os.path.basename(torrent_true_path)
+    #print "Torrent True Path: %s\nFilename: %s\n" % (torrent_true_path, torrent_name)
+    if not os.path.exists(torrent_true_path):
+        command = "ctorrent -t -u \"%s\" -s %s %s" % (app.config['BROSERV'], term_escape(torrent_true_path), term_escape(true_path))
+        #print "Command to execute: %s" % (command)
+        p = Popen(command, stdout=PIPE, shell=True)
+        p.communicate()
+    os.system("ctorrent -e 160 -i 192.168.0.128 -p 2222 -d %s" % torrent_true_path)
+    return send_from_directory(torrent_directory, torrent_name, cache_timeout=1, as_attachment=True, mimetype='application/x-bittorrent')
 
 @app.route('/list/', methods=['GET'])
 def root_list():
@@ -35,7 +41,7 @@ def root_list():
 
 @app.route('/list/<path:path>/', methods=['GET'])
 def list(path):
-    final_path = os.path.join(app.config['UPLOAD_FOLDER'], path)
+    final_path = os.path.join(app.config['MEDIA_FOLDER'], path)
     terminal_path = term_escape(final_path)
     files = Popen("find %s -maxdepth 1 -type f | grep -v \'.torrent$\'" % terminal_path, stdout=PIPE, shell=True)
     directories = Popen("find %s -maxdepth 1 -type d | grep -v \'.torrent$\'" % terminal_path, stdout=PIPE, shell=True)
@@ -54,7 +60,7 @@ def upload_file(path):
         the_file = request.files['file']
         if the_file:
             filename = secure_filename(the_file.filename)
-            the_file.save(os.path.join(app.config['UPLOAD_FOLDER'], path, filename))
+            the_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             if path == '':
                 return redirect(url_for('root_list'))
             else:
