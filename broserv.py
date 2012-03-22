@@ -32,7 +32,7 @@ def seed_file(path):
         #print "Command to execute: %s" % (command)
         p = Popen(command, stdout=PIPE, shell=True)
         p.communicate()
-    os.system("ctorrent -e 160 -i 192.168.0.128 -p 2222 -d %s" % torrent_true_path)
+    os.system("(cd %s; ctorrent -e 160 -U 25 -i 192.168.0.128 %s ) &" % (term_escape(torrent_directory), term_escape(torrent_name)))
     return send_from_directory(torrent_directory, torrent_name, cache_timeout=1, as_attachment=True, mimetype='application/x-bittorrent')
 
 @app.route('/list/', methods=['GET'])
@@ -49,22 +49,6 @@ def list(path):
     files_list.extend(get_listing(final_path, files.stdout.read(), "file"))
     files_list.extend(get_listing(final_path, directories.stdout.read(), "directory"))
     return render_template('list_files.html', rel_path=request.path, listing=files_list, path=path)
-
-@app.route('/upload/', methods=['POST'])
-def root_upload():
-    return upload_file('')
-
-@app.route('/upload/<path:path>/', methods=['POST'])
-def upload_file(path):
-    if request.method == 'POST':
-        the_file = request.files['file']
-        if the_file:
-            filename = secure_filename(the_file.filename)
-            the_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            if path == '':
-                return redirect(url_for('root_list'))
-            else:
-                return redirect(url_for('list', path=path))
 
 @app.route('/favicon.ico')
 def favicon():
